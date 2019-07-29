@@ -1,16 +1,16 @@
 import React from 'react';
 import { List, Spin, Avatar, message, Modal } from 'antd';
-import {Button,Icon} from 'antd';
+import {Skeleton, Button, Icon } from 'antd';
 import {
   deldoclist
 } from '../services/docapi';
 
-const IconText = ({ type, text }) => (
-  <span>
-    <Icon type={type} style={{ marginRight: 8 }} />
-    {text}
-  </span>
-);
+// const IconText = ({ type, text }) => (
+//   <span>
+//     <Icon type={type} style={{ marginRight: 8 }} />
+//     {text}
+//   </span>
+// );
 
 class Doc extends React.Component {
 
@@ -104,7 +104,7 @@ class Doc extends React.Component {
         <Spin spinning={onLoading} delay={100}>
           <List
             itemLayout="vertical"
-            size="large"
+            // size="large"
             pagination={{
               onChange: onPageChange,
               defaultCurrent: 1,
@@ -121,26 +121,30 @@ class Doc extends React.Component {
               <List.Item
                 key={item.title}
                 actions={[
-                  <IconText type="star-o" text="156" />,
-                  <IconText type="like-o" text="156" />,
-                  <IconText type="message" text="2" />,
+                  // <IconText type="star-o" text="156" />,
+                  // <IconText type="like-o" text="156" />,
+                  // <IconText type="message" text="2" />,
                   <Button type="primary" onClick={onDetailOpen(item)}>打开</Button>,
                   <Button type="danger" onClick={this.handelShowDelModel(item.id)}>删除</Button>
                 ]}
-                extra={
-                  <img
-                    width={272}
-                    alt="logo"
-                    src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                  />
-                }
+              // extra={
+              //   <img
+              //     width={272}
+              //     alt="logo"
+              //     src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+              //   />
+              // }
               >
+              <Skeleton avatar title loading={false} active>
                 <List.Item.Meta
-                  avatar={<Avatar src={'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} />}
+                  avatar={<Avatar icon={"file"} />}
                   title={item.name}
                   description={item.ts}
                 />
-                {item.content}
+                <div>
+                  {item.content}
+                </div>
+              </Skeleton>
               </List.Item>
             )}
           />
