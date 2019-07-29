@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const serveUrl = {
+    systemstate: '/web/doc/systemstate',
     truncate: '/web/doc/truncate',
     getDoc: '/web/doc/detail',
     queryDoc: '/web/doc/query',
@@ -112,5 +113,17 @@ export function deldoclist(param){
         headers: {"Accept": "*/*","Content-Type": 'application/json; charset=UTF-8'},
         url: serveUrl.deldoclist,
         data: JSON.stringify(param)
+      })
+}
+
+
+/**
+ *  获得文件详细内容
+ */
+export function getSystemState(){
+    return axios({
+        method: 'GET',
+        headers: {"Accept": "*/*","Content-Type": 'application/x-www-form-urlencoded; charset=UTF-8'},
+        url: serveUrl.systemstate
       })
 }

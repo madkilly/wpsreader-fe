@@ -26,6 +26,7 @@ class ResetSystem extends React.Component {
       const result = await reset();
       if (result.data.success == "true") {
         this.props.close();
+        message.success(result.data.message);
       } else {
         message.error("系统复位失败。" + result.data.message);
       }

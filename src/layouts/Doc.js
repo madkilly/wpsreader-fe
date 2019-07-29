@@ -44,7 +44,7 @@ class Doc extends React.Component {
   componentWillReceiveProps(nextProps) {
 
     let { query, field } = this.context;
-    console.log(query);
+   // console.log(query);
     if (query && field) {
       this.getList(query, field);
       this.setState({
@@ -56,13 +56,13 @@ class Doc extends React.Component {
   }
 
 
-  onPageChange=(page) => {
-    const doclist=[];
-    this.setState(
-      doclist
-    )
-    console.log(page);
-  }
+  // onPageChange=(page) => {
+  //   const doclist=[];
+  //   this.setState(
+  //     doclist
+  //   )
+  // //  console.log(page);
+  // }
 
   render() {
     const {

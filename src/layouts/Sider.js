@@ -9,8 +9,11 @@ import UploadModal from '../components/UploadModal'
 import UploadDir from '../components/UploadDir'
 import WatchDir from '../components/WatchDir'
 import ResetSystem from '../components/ResetSystem'
+import StateModal from '../components/StateModal'
+
 
 import {
+    getSystemState,
     truncate,
   } from '../services/docapi';
 
@@ -28,11 +31,13 @@ class SiderBLock extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            SystemStateData:[],
             UploadModalVisible: false,
             UploadDirModalVisible: false,
             WatchDirModalVisible:false,
             ResetSystemModalVisible:false,
-            TruncateModalVisible:false
+            TruncateModalVisible:false,
+            StateModalVisible:false
         };
     }
 
@@ -77,12 +82,34 @@ class SiderBLock extends React.Component {
         });
     };
 
+    showStateModal = async() => {
+        this.handleState();
+        this.setState({
+            StateModalVisible: true,
+        });
+    };
+
+    handleState = async () =>{
+        try {
+            const result = await getSystemState();
+            if (result.data.success == "true") {
+              this.setState({
+                SystemStateData:result.data.data
+              });
+            } else {
+                message.error("获取状态失败" + result.data.message);
+            }
+        } catch (error) {
+            message.error("获取状态失败" + error);
+        }
+    }
+    
 
     handleQuery = (value) => {
         try {
             this.props.onQuery(value, 'all');
         } catch (error) {
-
+            message.error("查询失败" + error);
         }
 
     }
@@ -102,7 +129,7 @@ class SiderBLock extends React.Component {
     }
 
     render() {
-        const { query } = this.state;
+        const {SystemStateData, query } = this.state;
         return (
             <Sider style={{
                 overflow: 'auto', height: '100vh', position: 'fixed', left: 0,
@@ -165,6 +192,18 @@ class SiderBLock extends React.Component {
                                 >
                                 确定要清空数据吗！
                                 </Modal>
+                        </Menu.Item>
+                        <Menu.Item key="/state">
+                            <Link to="/state" onClick={this.showStateModal}>系统状态</Link>
+                                <StateModal
+                                title="系统状态"
+                                sourceData = {SystemStateData}
+                                visible={this.state.StateModalVisible}
+                                close={this.handleChangeModal("StateModalVisible",false)}
+                                onread = {this.handleState}
+                                >
+                                确定要清空数据吗！
+                                </StateModal>
                         </Menu.Item>
                     </SubMenu>
                 </Menu>
