@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, Form, Avatar } from 'antd';
 import {
-  Upload, message, Modal, Input, Button, Layout, Menu, Breadcrumb, Icon,
+  Upload, Spin, message, Modal, Input, Button, Layout, Menu, Breadcrumb, Icon,
 } from 'antd';
 import {
   watchDir,
@@ -10,7 +10,7 @@ import {
 const WatchDirForm = Form.create({ name: 'WatchDirForm' })(
   class extends React.Component {
     render() {
-      const { visible, onOk, onCancel } = this.props;
+      const { visible, onOk, onCancel,uploading } = this.props;
       const { getFieldDecorator } = this.props.form;
       return (
         <div>
@@ -20,6 +20,7 @@ const WatchDirForm = Form.create({ name: 'WatchDirForm' })(
             onOk={onOk}
             onCancel={onCancel}
           >
+            <Spin spinning={uploading} delay={100}>
             <Form layout="vertical">
               <Form.Item label="输入文件夹路径">
                 {getFieldDecorator('path', {
@@ -27,8 +28,9 @@ const WatchDirForm = Form.create({ name: 'WatchDirForm' })(
                 })(<Input />)}
               </Form.Item>
             </Form >
+            </Spin>
           </Modal>
-        </div>
+        </div >
       );
     }
   }
@@ -53,9 +55,12 @@ class WatchDir extends React.Component {
 
       let param = {
         path: values.path
-    }
+      }
 
       try {
+        this.setState({
+          uploading: true,
+        });
         const result = await watchDir(param);
         if (result.data.success == "true") {
           this.props.close();
@@ -65,10 +70,13 @@ class WatchDir extends React.Component {
         }
       } catch (error) {
         message.error("监视失败。" + error);
+      }finally{
+        this.setState({
+          uploading: false
+        });
+        form.resetFields();
+        this.props.close();
       }
-      console.log('Received values of form: ', values);
-      form.resetFields();
-      this.props.close();
     });
   };
 
@@ -83,6 +91,7 @@ class WatchDir extends React.Component {
   };
 
   render() {
+    const { uploading } = this.state;
     const { visible } = this.props;
     return (
       <WatchDirForm
@@ -90,6 +99,7 @@ class WatchDir extends React.Component {
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
+        uploading={uploading}
       />
     )
 

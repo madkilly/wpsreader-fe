@@ -1,8 +1,6 @@
 import React from 'react';
-import { List, Form, Avatar } from 'antd';
-import {
-  Upload, message, Modal, Input, Button, Layout, Menu, Breadcrumb, Icon,
-} from 'antd';
+import { Form } from 'antd';
+import {message, Modal, Input, Spin} from 'antd';
 import {
   createDir,
 } from '../services/docapi';
@@ -10,7 +8,7 @@ import {
 const UploadDirForm = Form.create({ name: 'UploadDirForm' })(
   class extends React.Component {
     render() {
-      const { visible, onOk, onCancel } = this.props;
+      const { visible, onOk, onCancel, uploading } = this.props;
       const { getFieldDecorator } = this.props.form;
       return (
         <div>
@@ -20,13 +18,15 @@ const UploadDirForm = Form.create({ name: 'UploadDirForm' })(
             onOk={onOk}
             onCancel={onCancel}
           >
-            <Form layout="vertical">
-              <Form.Item label="输入文件夹路径">
-                {getFieldDecorator('path', {
-                  rules: [{ required: true, message: '请输入文件夹路径' }],
-                })(<Input />)}
-              </Form.Item>
-            </Form >
+            <Spin spinning={uploading} delay={100}>
+              <Form layout="vertical">
+                <Form.Item label="输入文件夹路径">
+                  {getFieldDecorator('path', {
+                    rules: [{ required: true, message: '请输入文件夹路径' }],
+                  })(<Input />)}
+                </Form.Item>
+              </Form >
+            </Spin>
           </Modal>
         </div>
       );
@@ -50,11 +50,13 @@ class UploadDir extends React.Component {
       if (err) {
         return;
       }
-
       let param = {
         path: values.path
-    }
+      }
       try {
+        this.setState({
+          uploading: true,
+        });
         const result = await createDir(param);
         if (result.data.success == "true") {
           this.props.close();
@@ -64,10 +66,13 @@ class UploadDir extends React.Component {
         }
       } catch (error) {
         message.error("上传失败。" + error);
+      } finally {
+        this.setState({
+          uploading: false
+        });
+        form.resetFields();
+        this.props.close();
       }
-      //console.log('Received values of form: ', values);
-      form.resetFields();
-      this.props.close();
     });
   };
 
@@ -82,6 +87,7 @@ class UploadDir extends React.Component {
   };
 
   render() {
+    const { uploading } = this.state;
     const { visible } = this.props;
     return (
       <UploadDirForm
@@ -89,6 +95,7 @@ class UploadDir extends React.Component {
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
+        uploading={uploading}
       />
     )
 

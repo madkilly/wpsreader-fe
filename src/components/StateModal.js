@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, Avatar } from 'antd';
 import {
-  Upload, message,Table,Modal, Input, Button, Layout, Menu, Breadcrumb, Icon,
+  Upload, message, Table, Modal, Spin, Input, Button, Layout, Menu, Breadcrumb, Icon,
 } from 'antd';
 import {
   systemstate,
@@ -28,21 +28,16 @@ class StateModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
-      uploading: false,
+      data: []
     };
   }
 
   handleCancel = e => {
-    this.setState({
-      fileList: []
-    });
     this.props.close();
   };
 
   render() {
-    const { uploading, fileList } = this.state;
-    const { visible ,sourceData} = this.props;
+    const { visible, sourceData, loading } = this.props;
     return (
       <div>
         <Modal
@@ -51,7 +46,9 @@ class StateModal extends React.Component {
           onOk={this.handleCancel}
           onCancel={this.handleCancel}
         >
-        <Table columns={columns} dataSource={sourceData} />
+          <Spin spinning={loading} delay={100}>
+            <Table columns={columns} dataSource={sourceData} />
+          </Spin>
         </Modal>
       </div>
     );

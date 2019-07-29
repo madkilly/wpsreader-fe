@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, Avatar } from 'antd';
 import {
-  Upload, message,Modal, Input, Button, Layout, Menu, Breadcrumb, Icon,
+  Upload, message, Modal,Spin, Input, Button, Layout, Menu, Breadcrumb, Icon,
 } from 'antd';
 import {
   createDoc,
@@ -38,11 +38,14 @@ class UploadModal extends React.Component {
       }
     } catch (error) {
       message.error("上传失败。" + error);
+    }finally{
+      this.setState({
+        fileList: [],
+        uploading:false
+      });
+
     }
 
-    this.setState({
-      fileList: []
-    });
   };
 
   handleCancel = e => {
@@ -85,11 +88,13 @@ class UploadModal extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          <Upload {...props}>
-            <Button>
-              <Icon type="upload" /> 选择文件
+          <Spin spinning={uploading} delay={100}>
+            <Upload {...props}>
+              <Button>
+                <Icon type="upload" /> 选择文件
           </Button>
-          </Upload>
+            </Upload>
+          </Spin>
         </Modal>
       </div>
     );

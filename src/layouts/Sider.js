@@ -1,26 +1,21 @@
 import React from 'react';
 import { Link } from 'dva/router';
-import {
-    Modal,message, Button, Input, Layout, Menu, Breadcrumb, Icon,
-} from 'antd';
-import { all } from '_redux-saga@0.16.2@redux-saga/effects';
+import {message, Input, Layout, Menu, Icon} from 'antd';
 
 import UploadModal from '../components/UploadModal'
 import UploadDir from '../components/UploadDir'
 import WatchDir from '../components/WatchDir'
 import ResetSystem from '../components/ResetSystem'
 import StateModal from '../components/StateModal'
+import TruncateData from '../components/TruncateData'
 
 
 import {
-    getSystemState,
-    truncate,
+    getSystemState
   } from '../services/docapi';
 
 
-const {
-    Header, Content, Footer, Sider,
-} = Layout;
+const { Sider} = Layout;
 const Search = Input.Search;
 const SubMenu = Menu.SubMenu;
 
@@ -31,6 +26,7 @@ class SiderBLock extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading:false,
             SystemStateData:[],
             UploadModalVisible: false,
             UploadDirModalVisible: false,
@@ -90,6 +86,9 @@ class SiderBLock extends React.Component {
     };
 
     handleState = async () =>{
+        this.setState({
+            loading: true
+        });
         try {
             const result = await getSystemState();
             if (result.data.success == "true") {
@@ -101,6 +100,10 @@ class SiderBLock extends React.Component {
             }
         } catch (error) {
             message.error("获取状态失败" + error);
+        }finally{
+            this.setState({
+                loading: false,
+            });
         }
     }
     
@@ -114,22 +117,8 @@ class SiderBLock extends React.Component {
 
     }
 
-    handleTruncate = async () =>{
-        try {
-            const result = await truncate();
-            if (result.data.success == "true") {
-                    message.success(result.data.message);
-            } else {
-                message.error("清空数据失败" + result.data.message);
-            }
-        } catch (error) {
-            message.error("清空数据失败" + error);
-        }
-        this.handleChangeModal("TruncateModalVisible",false)
-    }
-
     render() {
-        const {SystemStateData, query } = this.state;
+        const {SystemStateData, loading,query } = this.state;
         return (
             <Sider style={{
                 overflow: 'auto', height: '100vh', position: 'fixed', left: 0,
@@ -184,14 +173,10 @@ class SiderBLock extends React.Component {
                     >
                         <Menu.Item key="/truncate">
                             <Link to="/truncate" onClick={this.showTruncateModal}>清空数据</Link>
-                                <Modal
-                                title="清空数据"
+                                <TruncateData
                                 visible={this.state.TruncateModalVisible}
-                                onOk={this.handleTruncate}
-                                onCancel={this.handleChangeModal("TruncateModalVisible",false)}
-                                >
-                                确定要清空数据吗！
-                                </Modal>
+                                close={this.handleChangeModal("TruncateModalVisible",false)}
+                                />
                         </Menu.Item>
                         <Menu.Item key="/state">
                             <Link to="/state" onClick={this.showStateModal}>系统状态</Link>
@@ -200,7 +185,7 @@ class SiderBLock extends React.Component {
                                 sourceData = {SystemStateData}
                                 visible={this.state.StateModalVisible}
                                 close={this.handleChangeModal("StateModalVisible",false)}
-                                onread = {this.handleState}
+                                loading = {loading}
                                 >
                                 确定要清空数据吗！
                                 </StateModal>

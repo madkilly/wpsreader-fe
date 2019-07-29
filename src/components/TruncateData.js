@@ -1,10 +1,10 @@
 import React from 'react';
-import { Spin, message, Modal} from 'antd';
+import { Spin, message, Modal } from 'antd';
 import {
-  reset,
+  truncate,
 } from '../services/docapi';
 
-class ResetSystem extends React.Component {
+class TruncateData extends React.Component {
 
   constructor(props) {
     super(props);
@@ -14,24 +14,18 @@ class ResetSystem extends React.Component {
   }
 
   handleOk = async e => {
-
-    this.setState({
-      uploading: true,
-    });
-
     try {
       this.setState({
         uploading: true,
       });
-      const result = await reset();
+      const result = await truncate();
       if (result.data.success == "true") {
-        this.props.close();
         message.success(result.data.message);
       } else {
-        message.error("系统复位失败。" + result.data.message);
+        message.error("清空数据失败!" + result.data.message);
       }
     } catch (error) {
-      message.error("系统复位失败。" + error);
+      message.error("清空数据失败!" + error);
     } finally {
       this.setState({
         uploading: false
@@ -50,18 +44,18 @@ class ResetSystem extends React.Component {
     return (
       <div>
         <Modal
-          title="复位系统"
+          title="清空数据"
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
           <Spin spinning={uploading} delay={100}>
-            确认复位系统，终止所有监视及上传任务吗？
-        </Spin>
+            确定要清空数据吗?
+          </Spin>
         </Modal>
       </div>
     );
   }
 }
 
-export default ResetSystem;
+export default TruncateData;
