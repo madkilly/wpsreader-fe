@@ -54,7 +54,6 @@ class UploadDir extends React.Component {
       let param = {
         path: values.path
     }
-
       try {
         const result = await createDir(param);
         if (result.data.success == "true") {
@@ -66,7 +65,7 @@ class UploadDir extends React.Component {
       } catch (error) {
         message.error("上传失败。" + error);
       }
-      console.log('Received values of form: ', values);
+      //console.log('Received values of form: ', values);
       form.resetFields();
       this.props.close();
     });
@@ -74,7 +73,7 @@ class UploadDir extends React.Component {
 
 
   handleCancel = e => {
-    console.log(e);
+    //console.log(e);
     this.props.close();
   };
 

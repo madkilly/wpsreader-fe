@@ -21,6 +21,7 @@ class MainPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading:false,
             docList: [],
             // 搜索内容
             query: '',
@@ -50,13 +51,11 @@ class MainPage extends React.Component {
         const queryInput = query;
         this.setState(
             {
-                query: queryInput,
-                loading: true
+                query: queryInput
             },
             () => {
                 console.log(query);
                 this.getDocList(queryInput, 'all', 1);
-                // this.getDocDbList(queryInput, field, 1);
             }
         );
     };
@@ -70,19 +69,31 @@ class MainPage extends React.Component {
             index: activePage,
             size: pageSize
         }
-        const result = await listDbDoc(param);
-        console.log(result);
-        if (result.data.success === 'true') {
-            let data = [];
-            data = result.data;
-            this.setState({
-                docList: data.data.data,
-                index: data.data.index,
-                pageSize: data.data.size,
-                total: data.data.total,
-                query,
-                field
-            });
+
+        try {
+            const result = await listDbDoc(param);
+            if (result.data.success == "true") {
+                if (result.data.data != null) {
+                    let data = [];
+                    data = result.data;
+                    this.setState({
+                        docList: data.data.data,
+                        index: data.data.index,
+                        pageSize: data.data.size,
+                        total: data.data.total,
+                        query,
+                        field
+                    });
+                } else {
+                    message.error("获取详细文件内容失败");
+                }
+            } else {
+                message.error("获取详细文件内容失败" + result.data.message);
+            }
+        } catch (error) {
+            message.error("获取详细文件内容失败" + error);
+        }finally{
+            this.endLoading();
         }
     }
 
@@ -97,21 +108,31 @@ class MainPage extends React.Component {
             index: activePage,
             size: pageSize
         }
-        const result = await qureyDoc(param);
-
-        if (result.data.success === 'true') {
-            let data = [];
-            data = result.data;
-            this.setState({
-                docList: data.data.data,
-                index: data.data.index,
-                pageSize: data.data.size,
-                total: data.data.total,
-                query,
-                field
-            });
+        try {
+            const result = await qureyDoc(param);
+            if (result.data.success == "true") {
+                if (result.data.data != null) {
+                    let data = [];
+                    data = result.data;
+                    this.setState({
+                        docList: data.data.data,
+                        index: data.data.index,
+                        pageSize: data.data.size,
+                        total: data.data.total,
+                        query,
+                        field
+                    });
+                } else {
+                    message.error("获取详细文件内容失败");
+                }
+            } else {
+                message.error("获取详细文件内容失败" + result.data.message);
+            }
+        } catch (error) {
+            message.error("获取详细文件内容失败" + error);
+        }finally{
+            this.endLoading();
         }
-
     }
 
     // 精确获取文档
@@ -135,6 +156,8 @@ class MainPage extends React.Component {
             }
         } catch (error) {
             message.error("获取详细文件内容失败" + error);
+        }finally{
+            this.endLoading();
         }
     }
 
@@ -149,7 +172,7 @@ class MainPage extends React.Component {
      *
      */
     handleChangeModal = (params) => () => {
-        console.log(params)
+       // console.log(params)
         this.setState({
             params
         });
@@ -185,6 +208,20 @@ class MainPage extends React.Component {
         });
     };
 
+    endLoading = () => {
+        this.setState({
+            loading: false,
+        });
+    };
+
+    onDetailDel = (delid) => { 
+        let cachelist =this.state.docList.splice(this.state.docList.findIndex(v => v.id === delid),1);    
+        console.log(cachelist);
+        this.setState({
+            docList:this.state.docList
+        });
+    };
+
     render() {
         const {
             docList,
@@ -193,6 +230,7 @@ class MainPage extends React.Component {
             index,
             pageSize,
             total,
+            loading,
             showDetail
         } = this.state;
         return (
@@ -211,6 +249,8 @@ class MainPage extends React.Component {
                                 onPageChange={this.onPageChange}
                                 onDetailOpen={this.showDetailHandler}
                                 onItemDel={this.delDocItem}
+                                onLoading = {loading}
+                                onDelete = {this.onDetailDel}
                             />
                             <Modal
                                 visible={showDetail}
