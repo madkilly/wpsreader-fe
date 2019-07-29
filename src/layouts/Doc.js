@@ -32,7 +32,10 @@ class Doc extends React.Component {
       field: '', // 查询类别
       activePage: 1,
       pages: 1,
-      showLoading: true
+      showLoading: true,
+      showDetail:false,
+      detailTitle: '',
+      detailContent:''
     }
   }
 
@@ -46,7 +49,7 @@ class Doc extends React.Component {
       this.getList(query, field);
       this.setState({
         query,
-        field
+        field,
       })
 
     }
@@ -67,9 +70,12 @@ class Doc extends React.Component {
       index,
       pageSize,
       total,
-      onPageChange
+      onPageChange,
+      onDetailOpen
     } = this.props;
+    
     return (
+      <div>
       <List
         itemLayout="vertical"
         size="large"
@@ -82,7 +88,7 @@ class Doc extends React.Component {
         dataSource={doclist}
         footer={
           <div>
-            <b>zhukai design</b> footer part
+            <b>文件查询</b> 系统
                 </div>
         }
         renderItem={item => (
@@ -92,7 +98,7 @@ class Doc extends React.Component {
               <IconText type="star-o" text="156" />,
               <IconText type="like-o" text="156" />,
               <IconText type="message" text="2" />,
-              <Button type="primary">打开</Button>,
+              <Button type="primary" onClick={onDetailOpen(item)}>打开</Button>,
               <Button type="danger">删除</Button>
             ]}
             extra={
@@ -111,7 +117,9 @@ class Doc extends React.Component {
             {item.content}
           </List.Item>
         )}
-      />);
+      />
+      </div>
+      );
   }
 }
 

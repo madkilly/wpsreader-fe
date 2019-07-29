@@ -1,9 +1,12 @@
 import React from 'react';
 import styles from './index.css';
 import Sider from './Sider';
+import { Modal, message } from 'antd';
 import Doc from './Doc';
+import Highlighter from "react-highlight-words";
 
 import {
+    getDoc,
     qureyDoc,
     createDoc,
     listDbDoc
@@ -30,7 +33,10 @@ class MainPage extends React.Component {
 
             showCreatDocModal: false, // 创建文件
             showBatchUploadModal: false, // 批量上传
-            showDeleteDocfirm: false // 删除提示框
+            showDeleteDocfirm: false, // 删除提示框
+            showDetail: false,
+            detailTitle: '',
+            detailContent: ''
 
         };
     }
@@ -108,12 +114,76 @@ class MainPage extends React.Component {
 
     }
 
+    // 精确获取文档
+    getDocById = async (rawid) => {
+        this.setState({
+            loading: true
+        });
+        let param = {
+            id: rawid
+        }
+        try {
+            const result = await getDoc(param);
+            if (result.data.success == "true") {
+                if (result.data.data != null) {
+                    return result.data.data;
+                } else {
+                    message.error("获取详细文件内容失败");
+                }
+            } else {
+                message.error("获取详细文件内容失败" + result.data.message);
+            }
+        } catch (error) {
+            message.error("获取详细文件内容失败" + error);
+        }
+    }
+
     //  页码变换
     onPageChange = (page) => {
-        const {query} = this.state;
+        const { query } = this.state;
         this.getDocList(query, 'all', page);
     }
 
+    /**
+     * 更新弹框显示
+     *
+     */
+    handleChangeModal = (params) => () => {
+        console.log(params)
+        this.setState({
+            params
+        });
+    };
+
+    showDetailHandler = (params) => async () => {
+        const content = await this.getDocById(params.id);
+        if (content == null) {
+            return;
+        }
+        this.setState({
+            showDetail: true,
+            detailTitle: content.name,
+            detailContent: content.content
+        });
+    };
+
+    delDocItem = (params) => async () => {
+        const content = await this.getDocById(params.id);
+        if (content == null) {
+            return;
+        }
+        this.setState({
+            showDetail: true,
+            detailTitle: content.name,
+            detailContent: content.content
+        });
+    };
+
+    closeDetailHandler = () => {
+        this.setState({
+            showDetail: false,
+        });
+    };
 
     render() {
         const {
@@ -122,7 +192,8 @@ class MainPage extends React.Component {
             field,
             index,
             pageSize,
-            total
+            total,
+            showDetail
         } = this.state;
         return (
             <div className={styles.normal}>
@@ -138,7 +209,24 @@ class MainPage extends React.Component {
                                 pageSize={pageSize}
                                 total={total}
                                 onPageChange={this.onPageChange}
+                                onDetailOpen={this.showDetailHandler}
+                                onItemDel={this.delDocItem}
                             />
+                            <Modal
+                                visible={showDetail}
+                                title={this.state.detailTitle}
+                                onOk={this.closeDetailHandler}
+                                onCancel={this.closeDetailHandler}
+                            >
+                                <Highlighter
+                                    highlightClassName="highlight"
+                                    searchWords={this.state.query.trim().split(/\s+/)}
+                                    autoEscape={true}
+                                    highlightStyle={{color: 'red'}}
+                                    textToHighlight={this.state.detailContent}
+                                />,
+                                
+                            </Modal>
                         </div>
                     </Layout>
                 </Layout>

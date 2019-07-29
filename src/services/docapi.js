@@ -1,11 +1,15 @@
 import axios from 'axios';
 
 const serveUrl = {
+    truncate: '/web/doc/truncate',
+    getDoc: '/web/doc/detail',
     queryDoc: '/web/doc/query',
     listDoc: '/web/doc/list',
     createDoc:'/web/doc/create',
-    createDir:'/web/doc/createdir',
-    createDir:'/web/doc/watchdir'
+    createDir:'/web/doc/createbydir',
+    watchDir:'/web/doc/watch',
+    reset:'/web/doc/reset',
+    deldoclist:'/web/doc/del'
   }
 
 
@@ -46,6 +50,67 @@ export function createDir(param){
     return axios({
         method: 'POST',
         headers: {"Accept": "*/*","Content-Type": 'application/x-www-form-urlencoded; charset=UTF-8'},
-        url: serveUrl.createDoc+`?path=${param.path}`
+        url: serveUrl.createDir+`?path=${param.path}`
+      })
+}
+
+
+/**
+ *  监视文件夹dir
+ */
+export function watchDir(param){
+    param.path = encodeURIComponent(param.path);
+    return axios({
+        method: 'POST',
+        headers: {"Accept": "*/*","Content-Type": 'application/x-www-form-urlencoded; charset=UTF-8'},
+        url: serveUrl.watchDir+`?path=${param.path}`
+      })
+}
+
+
+/**
+ *  监视文件夹dir
+ */
+export function reset(){
+    return axios({
+        method: 'POST',
+        headers: {"Accept": "*/*","Content-Type": 'application/x-www-form-urlencoded; charset=UTF-8'},
+        url: serveUrl.reset
+      })
+}
+
+
+/**
+ *  获得文件详细内容
+ */
+export function getDoc(param){
+    return axios({
+        method: 'GET',
+        headers: {"Accept": "*/*","Content-Type": 'application/x-www-form-urlencoded; charset=UTF-8'},
+        url: serveUrl.getDoc+`?docid=${param.id}`
+      })
+}
+
+/**
+ *  获得文件详细内容
+ */
+export function truncate(){
+    return axios({
+        method: 'POST',
+        headers: {"Accept": "*/*","Content-Type": 'application/x-www-form-urlencoded; charset=UTF-8'},
+        url: serveUrl.truncate
+      })
+}
+
+
+/**
+ *  删除文件列表
+ */
+export function deldoclist(param){
+    return axios({
+        method: 'DELETE',
+        headers: {"Accept": "*/*","Content-Type": 'application/json; charset=UTF-8'},
+        url: serveUrl.deldoclist,
+        data: JSON.stringify(param)
       })
 }

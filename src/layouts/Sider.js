@@ -1,12 +1,19 @@
 import React from 'react';
 import { Link } from 'dva/router';
 import {
-    Modal, Button, Input, Layout, Menu, Breadcrumb, Icon,
+    Modal,message, Button, Input, Layout, Menu, Breadcrumb, Icon,
 } from 'antd';
 import { all } from '_redux-saga@0.16.2@redux-saga/effects';
 
 import UploadModal from '../components/UploadModal'
 import UploadDir from '../components/UploadDir'
+import WatchDir from '../components/WatchDir'
+import ResetSystem from '../components/ResetSystem'
+
+import {
+    truncate,
+  } from '../services/docapi';
+
 
 const {
     Header, Content, Footer, Sider,
@@ -22,7 +29,10 @@ class SiderBLock extends React.Component {
         super(props);
         this.state = {
             UploadModalVisible: false,
-            UploadDirModalVisible: false
+            UploadDirModalVisible: false,
+            WatchDirModalVisible:false,
+            ResetSystemModalVisible:false,
+            TruncateModalVisible:false
         };
     }
 
@@ -49,6 +59,23 @@ class SiderBLock extends React.Component {
         });
     };
 
+    showWatchDirModal = () => {
+        this.setState({
+            WatchDirModalVisible: true,
+        });
+    };
+
+    showResetModal = () => {
+        this.setState({
+            ResetSystemModalVisible: true,
+        });
+    };
+
+    showTruncateModal = () => {
+        this.setState({
+            TruncateModalVisible: true,
+        });
+    };
 
 
     handleQuery = (value) => {
@@ -58,6 +85,20 @@ class SiderBLock extends React.Component {
 
         }
 
+    }
+
+    handleTruncate = async () =>{
+        try {
+            const result = await truncate();
+            if (result.data.success == "true") {
+                    message.success(result.data.message);
+            } else {
+                message.error("清空数据失败" + result.data.message);
+            }
+        } catch (error) {
+            message.error("清空数据失败" + error);
+        }
+        this.handleChangeModal("TruncateModalVisible",false)
     }
 
     render() {
@@ -94,6 +135,36 @@ class SiderBLock extends React.Component {
                                 visible={this.state.UploadDirModalVisible}
                                 close={this.handleChangeModal("UploadDirModalVisible", false)}
                             />
+                        </Menu.Item>
+                        <Menu.Item key="/watch">
+                            <Link to="/watch" onClick={this.showWatchDirModal}>监视文件夹</Link>
+                            <WatchDir
+                                visible={this.state.WatchDirModalVisible}
+                                close={this.handleChangeModal("WatchDirModalVisible", false)}
+                            />
+                        </Menu.Item>
+                        <Menu.Item key="/reset">
+                            <Link to="/reset" onClick={this.showResetModal}>复位系统</Link>
+                            <ResetSystem
+                                visible={this.state.ResetSystemModalVisible}
+                                close={this.handleChangeModal("ResetSystemModalVisible", false)}
+                            />
+                        </Menu.Item>
+                    </SubMenu>
+                    <SubMenu
+                        key="data"
+                        title={<span><Icon type="pie-chart" /><span>数据</span></span>}
+                    >
+                        <Menu.Item key="/truncate">
+                            <Link to="/truncate" onClick={this.showTruncateModal}>清空数据</Link>
+                                <Modal
+                                title="清空数据"
+                                visible={this.state.TruncateModalVisible}
+                                onOk={this.handleTruncate}
+                                onCancel={this.handleChangeModal("TruncateModalVisible",false)}
+                                >
+                                确定要清空数据吗！
+                                </Modal>
                         </Menu.Item>
                     </SubMenu>
                 </Menu>

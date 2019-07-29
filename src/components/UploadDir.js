@@ -59,6 +59,7 @@ class UploadDir extends React.Component {
         const result = await createDir(param);
         if (result.data.success == "true") {
           this.props.close();
+          message.success(result.data.message);
         } else {
           message.error("上传失败。" + result.data.message);
         }

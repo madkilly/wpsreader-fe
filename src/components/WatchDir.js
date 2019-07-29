@@ -4,7 +4,7 @@ import {
   Upload, message, Modal, Input, Button, Layout, Menu, Breadcrumb, Icon,
 } from 'antd';
 import {
-  createDir,
+  watchDir,
 } from '../services/docapi';
 
 const WatchDirForm = Form.create({ name: 'WatchDirForm' })(
@@ -56,14 +56,15 @@ class WatchDir extends React.Component {
     }
 
       try {
-        const result = await createDir(param);
+        const result = await watchDir(param);
         if (result.data.success == "true") {
           this.props.close();
+          message.success(result.data.message);
         } else {
-          message.error("上传失败。" + result.data.message);
+          message.error("监视失败。" + result.data.message);
         }
       } catch (error) {
-        message.error("上传失败。" + error);
+        message.error("监视失败。" + error);
       }
       console.log('Received values of form: ', values);
       form.resetFields();
