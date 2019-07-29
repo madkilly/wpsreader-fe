@@ -14,9 +14,6 @@ const serveUrl = {
   }
 
 
-  const headers = {"Content-Type": 'application/json'};
-
-
   /**
  *  查询doc*(仅数据库)
  */

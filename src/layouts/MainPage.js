@@ -8,7 +8,6 @@ import Highlighter from "react-highlight-words";
 import {
     getDoc,
     qureyDoc,
-    createDoc,
     listDbDoc
 } from '../services/docapi';
 
@@ -72,7 +71,7 @@ class MainPage extends React.Component {
 
         try {
             const result = await listDbDoc(param);
-            if (result.data.success == "true") {
+            if (result.data.success === "true") {
                 if (result.data.data != null) {
                     let data = [];
                     data = result.data;
@@ -110,7 +109,7 @@ class MainPage extends React.Component {
         }
         try {
             const result = await qureyDoc(param);
-            if (result.data.success == "true") {
+            if (result.data.success === "true") {
                 if (result.data.data != null) {
                     let data = [];
                     data = result.data;
@@ -145,7 +144,7 @@ class MainPage extends React.Component {
         }
         try {
             const result = await getDoc(param);
-            if (result.data.success == "true") {
+            if (result.data.success === "true") {
                 if (result.data.data != null) {
                     return result.data.data;
                 } else {
@@ -225,8 +224,6 @@ class MainPage extends React.Component {
     render() {
         const {
             docList,
-            query,
-            field,
             index,
             pageSize,
             total,

@@ -1,8 +1,6 @@
 import React from 'react';
-import { List, Form, Avatar } from 'antd';
-import {
-  Upload, Spin, message, Modal, Input, Button, Layout, Menu, Breadcrumb, Icon,
-} from 'antd';
+import { Form } from 'antd';
+import {Spin, message, Modal, Input} from 'antd';
 import {
   watchDir,
 } from '../services/docapi';
@@ -62,7 +60,7 @@ class WatchDir extends React.Component {
           uploading: true,
         });
         const result = await watchDir(param);
-        if (result.data.success == "true") {
+        if (result.data.success === "true") {
           this.props.close();
           message.success(result.data.message);
         } else {
@@ -82,7 +80,7 @@ class WatchDir extends React.Component {
 
 
   handleCancel = e => {
-    console.log(e);
+    //console.log(e);
     this.props.close();
   };
 

@@ -91,7 +91,7 @@ class SiderBLock extends React.Component {
         });
         try {
             const result = await getSystemState();
-            if (result.data.success == "true") {
+            if (result.data.success === "true") {
               this.setState({
                 SystemStateData:result.data.data
               });
@@ -118,7 +118,7 @@ class SiderBLock extends React.Component {
     }
 
     render() {
-        const {SystemStateData, loading,query } = this.state;
+        const {SystemStateData, loading} = this.state;
         return (
             <Sider style={{
                 overflow: 'auto', height: '100vh', position: 'fixed', left: 0,

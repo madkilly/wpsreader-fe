@@ -1,8 +1,6 @@
 import React from 'react';
-import { List, Avatar } from 'antd';
 import {
-  Upload, message, Modal,Spin, Input, Button, Layout, Menu, Breadcrumb, Icon,
-} from 'antd';
+  Upload, message, Modal,Spin,Button,Icon} from 'antd';
 import {
   createDoc,
 } from '../services/docapi';
@@ -30,7 +28,7 @@ class UploadModal extends React.Component {
 
     try {
       const result = await createDoc(formData);
-      if (result.data.success == "true") {
+      if (result.data.success === "true") {
         this.props.close();
         message.success(result.data.message);
       } else {
@@ -49,7 +47,7 @@ class UploadModal extends React.Component {
   };
 
   handleCancel = e => {
-    console.log(e);
+    //console.log(e);
     this.setState({
       fileList: []
     });

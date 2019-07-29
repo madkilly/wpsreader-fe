@@ -19,7 +19,7 @@ class TruncateData extends React.Component {
         uploading: true,
       });
       const result = await truncate();
-      if (result.data.success == "true") {
+      if (result.data.success === "true") {
         message.success(result.data.message);
       } else {
         message.error("清空数据失败!" + result.data.message);

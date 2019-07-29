@@ -1,11 +1,5 @@
 import React from 'react';
-import { List, Avatar } from 'antd';
-import {
-  Upload, message, Table, Modal, Spin, Input, Button, Layout, Menu, Breadcrumb, Icon,
-} from 'antd';
-import {
-  systemstate,
-} from '../services/docapi';
+import {Table, Modal, Spin} from 'antd';
 
 const columns = [
   {

@@ -1,20 +1,9 @@
 import React from 'react';
-import styles from './index.css';
 import { List, Spin, Avatar, message, Modal } from 'antd';
+import {Button,Icon} from 'antd';
 import {
-  Input, Button, Layout, Menu, Breadcrumb, Icon,
-} from 'antd';
-import {
-  qureyDoc,
-  createDoc,
   deldoclist
 } from '../services/docapi';
-
-const {
-  Header, Content, Footer, Sider,
-} = Layout;
-const Search = Input.Search;
-const SubMenu = Menu.SubMenu;
 
 const IconText = ({ type, text }) => (
   <span>
@@ -44,20 +33,19 @@ class Doc extends React.Component {
   }
 
 
-  // 更新组件状态
-  componentWillReceiveProps(nextProps) {
+  // // 更新组件状态
+  // componentWillReceiveProps(nextProps) {
+  //   let { query, field } = this.context;
+  //   // console.log(query);
+  //   if (query && field) {
+  //     this.getList(query, field);
+  //     this.setState({
+  //       query,
+  //       field,
+  //     })
 
-    let { query, field } = this.context;
-    // console.log(query);
-    if (query && field) {
-      this.getList(query, field);
-      this.setState({
-        query,
-        field,
-      })
-
-    }
-  }
+  //   }
+  // }
 
   handelDelDoc = async () => {
     this.setState({
@@ -70,7 +58,7 @@ class Doc extends React.Component {
     let delid = this.state.delDocId;
     try {
       const result = await deldoclist(param);
-      if (result.data.success == "true") {
+      if (result.data.success === "true") {
         console.log(this.state.doclist);
         this.props.onDelete(delid);
         message.success(result.data.message);
@@ -100,15 +88,6 @@ class Doc extends React.Component {
       showDelModel: false,
     });
   };
-
-
-  // onPageChange=(page) => {
-  //   const doclist=[];
-  //   this.setState(
-  //     doclist
-  //   )
-  // //  console.log(page);
-  // }
 
   render() {
     const {

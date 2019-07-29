@@ -24,7 +24,7 @@ class ResetSystem extends React.Component {
         uploading: true,
       });
       const result = await reset();
-      if (result.data.success == "true") {
+      if (result.data.success === "true") {
         this.props.close();
         message.success(result.data.message);
       } else {
